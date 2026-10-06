@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  db:
+    image: mariadb:10.11
+    container_name: limesurvey_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password_here
+      MYSQL_DATABASE: limesurvey
+      MYSQL_USER: limesurvey_user
+      MYSQL_PASSWORD: db_password_here
+    volumes:
+      - db_data:/var/lib/mysql
+
+  limesurvey:
+    image: limesurvey:latest
+    container_name: limesurvey_app
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      DB_TYPE: mysqli
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_NAME: limesurvey
+      DB_USER: limesurvey_user
+      DB_PASSWORD: db_password_here
+    depends_on:
+      - db
+    volumes:
+      - limesurvey_data:/var/www/html
+
+volumes:
+  db_data:
+  limesurvey_data:
